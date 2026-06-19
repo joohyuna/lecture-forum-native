@@ -6,7 +6,6 @@
 /* --를 붙여서 표현함면 변수 선언임 */
 
 
-
 @layer base {
     /* 기본값 */
     :root {
@@ -19,7 +18,7 @@
         --divider: #E5E7EB;
 
         --primary-main: #2563EB;
-        --primary-contrast: #FFFFFF;  /* 기본 색상 위에 올라갈 글자 색 */
+        --primary-contrast: #FFFFFF; /* 기본 색상 위에 올라갈 글자 색 */
 
         --secondary-main: #4B5563;
         --secondary-contrast: #FFFFFF;
@@ -51,7 +50,7 @@
         --primary-main: #3B82F6;
         --primary-contrast: #FFFFFF;
 
-        --secondary-main: #3CA3AF;
+        --secondary-main: #9CA3AF;
         --secondary-contrast: #111827;
 
         --success-main: #34D399;
@@ -68,31 +67,34 @@
     }
 
     @media (prefers-color-scheme: dark) {
-        /* 앱에서 다크테마를 적용되는 변수 */
-        --bg-default: #111827;
-        --bg-paper: #1F2937;
+        :root {
+            /* 앱에서 다크테마를 적용되는 변수 */
+            --bg-default: #111827;
+            --bg-paper: #1F2937;
 
-        --text-default: #F9FAFB;
-        --text-secondary: #6B7280;
+            --text-default: #F9FAFB;
+            --text-secondary: #6B7280;
 
-        --divider: #374151;
+            --divider: #374151;
 
-        --primary-main: #3B82F6;
-        --primary-contrast: #FFFFFF;
+            --primary-main: #3B82F6;
+            --primary-contrast: #FFFFFF;
 
-        --secondary-main: #3CA3AF;
-        --secondary-contrast: #111827;
+            --secondary-main: #9CA3AF;
+            --secondary-contrast: #111827;
 
-        --success-main: #34D399;
-        --success-contrast: #111827;
+            --success-main: #34D399;
+            --success-contrast: #111827;
 
-        --error-main: #F87171;
-        --error-contrast: #FFFFFF;
+            --error-main: #F87171;
+            --error-contrast: #FFFFFF;
 
-        --warning-main: #FBBF24;
-        --warning-contrast: #111827;
+            --warning-main: #FBBF24;
+            --warning-contrast: #111827;
 
-        --info-main: #60A5FA;
-        --info-contrast: #111827;
+            --info-main: #60A5FA;
+            --info-contrast: #111827;
+        }
+
     }
 }

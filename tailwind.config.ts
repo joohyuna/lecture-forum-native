@@ -10,6 +10,9 @@ export default {
     plugins: [],
     theme: {
         extend: {
+            maxWidth: {
+                '250': '1000px',
+            },
             colors: {
                 /* 이 부분에 내갸 원하는 컬러 팔레트를 마음대로 적음 됨 */
                 background: {
@@ -48,4 +51,29 @@ export default {
             },
         },
     },
+    safelist: [
+        // 코드에서 니가 찾지 못해도, 여기에 기록한 클래스는 만들어줘
+        // 변수
+        {
+            pattern: /(bg|text|border)-(primary|secondary|error|success|warning|info)-(main|contrast)/,
+        },
+    ],
 } satisfies Config;
+
+// type User = {
+//      name: string;
+//      nickname: string;
+// };
+
+// cons a = {
+//      name: "abc";
+//      nickname: "eee",
+// } satisfies User;
+// satisfies : 타입을 지정하는 방식이나, 해당 객체의 모양을 만족하는지에 대해서만 검사함.
+//             맞지 않더라도 에러는 아님.
+
+// const a: User {
+//      name: "abc",
+//      nickname?: "eee",
+// };
+// 값에 : 을 붙여서 타입을 지정하는 건 진짜 그 모양 그대로만 맞춰줘야함, 안 맞으면 에러.
