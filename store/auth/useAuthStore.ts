@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "@/types/user";
+import { Platform } from "react-native";
 
 type AuthState = {
     // 값을 저장하는 프로퍼티
@@ -15,6 +16,13 @@ type AuthState = {
     logout: VoidFunction; // token과 user의 항목의 값을 비우고, isLoggedIn을 false로 바꾸는 일
 };
 
+// 이 프로그램이 구동되는 환경에 따라 사용해야 하는 스토리지(저장소)가 달라져야 함
+// 이프로그램을 실행 할때 결정됨
+const storage =
+    Platform.OS === "web"
+        ? createJSONStorage(() => localStorage)  // 웹이면
+        : createJSONStorage(() => AsyncStorage);  // 앱이면
+
 // 실제 작업 // 값만 바꿔주고 끝낼꺼야
 export const useAuthStore = create<AuthState>()(
     persist(
@@ -26,7 +34,10 @@ export const useAuthStore = create<AuthState>()(
             login: (user, token) => set({ isLoggedIn: true, token, user }),
             logout: () => set({ isLoggedIn: false, token: null, user: null }),
         }),
-        { name: "auth-storage", storage: createJSONStorage(() => AsyncStorage) },
+
+        // react-native 추가 정보 storage 장소가 변경됨
+        //
+        { name: "auth-storage", storage },
     ),
 );
 

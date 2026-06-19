@@ -1,6 +1,7 @@
 import { create } from "zustand"; // 쥬스탄드에서 불러올때 create 확인
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 
 export type ThemeType = "light" | "dark";
 
@@ -8,6 +9,13 @@ type ThemeState = {
     theme: ThemeType;
     onChangeTheme: VoidFunction; // () => void
 };
+
+// 이 프로그램이 구동되는 환경에 따라 사용해야 하는 스토리지(저장소)가 달라져야 함
+// 이프로그램을 실행 할때 결정됨
+const storage =
+    Platform.OS === "web"
+        ? createJSONStorage(() => localStorage) // 웹이면
+        : createJSONStorage(() => AsyncStorage); // 앱이면
 
 export const useThemeStore = create<ThemeState>()(
     // persist는 이렇게 마련한 store와 localStorage를 연결하는 미들웨어
@@ -27,7 +35,9 @@ export const useThemeStore = create<ThemeState>()(
         // 2.
         {
             name: "theme-storage",
-            storage: createJSONStorage(() => AsyncStorage,),
+
+            // react-native 에 추가 되는 항목
+            storage,
         },
     ),
 );

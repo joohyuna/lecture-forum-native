@@ -1,3 +1,98 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* CSS도 변수를 사용할 수 있음 */
+/* --를 붙여서 표현함면 변수 선언임 */
+
+
+
+@layer base {
+    /* 기본값 */
+    :root {
+        --bg-default: #F3F4F6;
+        --bg-paper: #FFFFFF;
+
+        --text-default: #1F2937;
+        --text-seconday: #9CA3AF;
+
+        --divider: #E5E7EB;
+
+        --primary-main: #2563EB;
+        --primary-contrast: #FFFFFF;  /* 기본 색상 위에 올라갈 글자 색 */
+
+        --secondary-main: #4B5563;
+        --secondary-contrast: #FFFFFF;
+
+        --success-main: #10B981;
+        --success-contrast: #FFFFFF;
+
+        --error-main: #EF4444;
+        --error-contrast: #FFFFFF;
+
+        --warning-main: #F59E0B;
+        --warning-contrast: #FFFFFF;
+
+        --info-main: #3B82F6;
+        --info-contrast: #FFFFFF;
+    }
+
+    /*  .dark라고 클래스가 붙으면, 그 안에서는 이 값들을 저 변수에서 사용하겠다  */
+    .dark {
+        /* 웹세서 다크 테마일 때 적옹 되는 변수들  */
+        --bg-default: #111827;
+        --bg-paper: #1F2937;
+
+        --text-default: #F9FAFB;
+        --text-secondary: #6B7280;
+
+        --divider: #374151;
+
+        --primary-main: #3B82F6;
+        --primary-contrast: #FFFFFF;
+
+        --secondary-main: #3CA3AF;
+        --secondary-contrast: #111827;
+
+        --success-main: #34D399;
+        --success-contrast: #111827;
+
+        --error-main: #F87171;
+        --error-contrast: #FFFFFF;
+
+        --warning-main: #FBBF24;
+        --warning-contrast: #111827;
+
+        --info-main: #60A5FA;
+        --info-contrast: #111827;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        /* 앱에서 다크테마를 적용되는 변수 */
+        --bg-default: #111827;
+        --bg-paper: #1F2937;
+
+        --text-default: #F9FAFB;
+        --text-secondary: #6B7280;
+
+        --divider: #374151;
+
+        --primary-main: #3B82F6;
+        --primary-contrast: #FFFFFF;
+
+        --secondary-main: #3CA3AF;
+        --secondary-contrast: #111827;
+
+        --success-main: #34D399;
+        --success-contrast: #111827;
+
+        --error-main: #F87171;
+        --error-contrast: #FFFFFF;
+
+        --warning-main: #FBBF24;
+        --warning-contrast: #111827;
+
+        --info-main: #60A5FA;
+        --info-contrast: #111827;
+    }
+}
