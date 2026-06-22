@@ -1,15 +1,14 @@
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text } from "react-native";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterUserInputType, registerUserSchema } from "@/schemas/user/registerUserSchema";
 import { twMerge } from "tailwind-merge";
 import Card from "@/components/common/card/Card";
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text } from "react-native";
 import InputGroup from "@/components/common/input/InputGroup";
-import ErrorMessage from "@/components/form/ErrorMessage";
+import ErrorMessage from "@/components/common/form/ErrorMessage";
 import Button from "@/components/common/button/Button";
 import userApi from "@/api/user/userApi";
-import { platform } from "node:os";
 import { isAxiosError } from "axios";
 
 function AuthRegisterPage() {
@@ -60,22 +59,26 @@ function AuthRegisterPage() {
             console.log(error);
             let errorMessage = "회원가입 중 오류가 발생했습니다.";
 
-            if(isAxiosError(error)) {
+            if (isAxiosError(error)) {
                 errorMessage = error.response?.data?.message || error.message;
-
             } else if (error instanceof Error) {
                 errorMessage = error.message;
             }
-            setError("root", {message: errorMessage});
+            setError("root", { message: errorMessage });
         }
     };
 
     // PC 에서는 문제가 아닌데, 모바일에서는 키보드가 화면을 침범하게 됨
     // 키보드가 화면 하단에 올라오면 화면이 줄어들도록 적용해줘야 되는데 : KeyboardAvoidingView
+    // behavior 속성에 "지금 현재 플랫폼에 따라서 동작 방식을 달리 적용" 해줘야 함
+    // ios (아이폰)일 때는 padding을 통해 하단에 키보드가 올라갈 공간을 마련해 주는 것
+    // aos (안드로이드)일 때는 height를 통해 화면이 줄어들도록 적용해 주는 것
+
     // ScrollView 컴포넌트 : 화면이 넘어 갈 만큼 넓거나, 길면 스크롤바을 만들어주는 녀석
     // 모바일 앱은 ScrollView로 감싸주지 않으면 스크롤바가 안 나옴, 그래서 ScrollView로 감싸주어야 함
     // 심지어 이 ScrollView는 패딩 영역을 주려면 className으로 주지 않고
     // contentContainerClassName 이라는 속성으로 부여해야 함
+    // showVerticalScrollIndicator 속성 : 스크롤바를 보여줄지 여부를 결정하는 속성
     // keywordShouldPersistTaps 속성 : 터치 이벤트가 자식 컴포넌트로 전파되는지 여부를 결정하는 속성
     //                                 handled 값을 주지 않으면 키보드가 열려있는 상태에서 터치 시 키보드만 닫힘
 
@@ -95,7 +98,7 @@ function AuthRegisterPage() {
                     {/*
                         react-hook-form에서 register를 꺼내서 사용하는 방법은 한 방에 처리하는 편의 기능
                         Controller 컴포넌트는 react-hook-form 에서 제공하는 컴포넌트로,
-                        폼 필륻를 컨트롤할 수 있는 기능을 제공한다.
+                        폼 필드를 컨트롤할 수 있는 기능을 제공한다.
                         render 속성은 Controller 컴포넌트의 필수 속성으로,
                         폼 필드를 렌더링하는 함수를 지정한다.
                         name 속성은 폼 필드의 이름을 지정한다.
