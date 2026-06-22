@@ -5,7 +5,7 @@ import { useThemeStore } from "@/store/theme/useThemeStore";
 import Button from "@/components/common/button/Button";
 
 function MainHeader() {
-    const {theme, onChangeTheme} = useThemeStore();
+    const { theme, onChangeTheme } = useThemeStore();
 
     return (
         <View className={"w-full h-16 bg-background-paper border-b border-divider"}>
@@ -21,17 +21,24 @@ function MainHeader() {
 
                 <View className={"flex-row items-center gap-8"}>
                     <Pressable onPress={onChangeTheme} className={"p-1.5 mr-1"}>
-                        <Ionicons name={theme === "light" ? "sunny" : "moon"} size={20} className={"text-text-default"} />
+                        <Ionicons
+                            name={theme === "light" ? "sunny" : "moon"}
+                            size={20}
+                            className={"text-text-default"}
+                        />
                     </Pressable>
                     <Link href={"/auth/login"} asChild>
-                        <Button color={"error"} variant={"contained"}>로그인</Button>
+                        <Button color={"primary"} variant={"text"}>
+                            로그인
+                        </Button>
                     </Link>
                     <Link href={"/auth/register"} asChild>
-                        <Button variant={"contained"} color={"primary"}>회원가입</Button>
+                        <Button variant={"contained"} color={"primary"}>
+                            회원가입
+                        </Button>
                     </Link>
                 </View>
             </View>
-
         </View>
     );
 }

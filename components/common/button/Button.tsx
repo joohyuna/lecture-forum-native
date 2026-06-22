@@ -1,5 +1,6 @@
 import { Pressable, PressableProps, Text } from "react-native";
-import { StyleColorType, StyleSizeType, StyleVariantType } from "@/types/style";
+import { BUTTON_SIZE_STYLE, StyleColorType, StyleSizeType, StyleVariantType } from "@/types/style";
+import { twMerge } from "tailwind-merge";
 
 interface Props extends PressableProps {
     // 앞으로 Button 컴포넌트 명세를 사용랄때 전달 받아야 되는 데이터 명세를 작성할래
@@ -23,6 +24,7 @@ function Button({
     const getVariantClasses = () => {
         switch (variant) {
             case "contained":
+                // tailwind는 이것을 그냥 string로 본다 그래서 정규식
                 return `bg-${color}-main`;
             case "outlined":
                 return `border border-${color}-main bg-transparent`;
@@ -39,19 +41,29 @@ function Button({
         return `text-${color}-main`;
     };
 
-    const BUTTON_SIZE_STYLE = {
-        small: "px-2 py-1 text-xs",
-        medium: "px-3 py-2 text-sm",
-        large: "px-5 py-3 text-base",
-    };
+
 
     return (
         <Pressable
-            className={`flex justify-center items-center rounded-md font-bold ${BUTTON_SIZE_STYLE[size]} ${getVariantClasses()} ${getTextColorClasses()} ${fullWidth ? "w-full" : ""} ${className}`}
+            className={twMerge(
+                // twMerge(...args): string
+                // ...args로 제공된 매개변수들을 하나로 합쳐서 string을 반환
+                "flex justify-center items-center rounded-md font-bold",
+                BUTTON_SIZE_STYLE[size],
+                getVariantClasses(),
+                getTextColorClasses(),
+                fullWidth ? "w-full" : "",
+                className,
+            )}
             {...props}>
             {typeof children === "string" ? (
                 <Text
-                    className={`font-bold text-sm ${getTextColorClasses()} ${size === "small" ? "text-xs" : size === "large" ? "text-base" : "text-sm"}`}>
+                    className={
+                    twMerge(
+                        "font-bold text-sm",
+                        getTextColorClasses(),
+                        size === "small" ? "text-xs" : size === "large" ? "text-base" : "text-sm",
+                    )}>
                     {children}
                 </Text>
             ) : (
@@ -60,5 +72,7 @@ function Button({
         </Pressable>
     );
 }
+
+// 공통컴포넌트를 짤수 있는것이 실력
 
 export default Button;
