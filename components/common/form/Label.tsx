@@ -1,6 +1,7 @@
-import { Text, TextProps } from "react-native";
+import { TextProps } from "react-native";
 import { StyleSizeType } from "@/types/style";
 import { twMerge } from "tailwind-merge";
+import TextComponent from "@/components/common/text/TextComponent";
 
 interface LabelProps extends TextProps {
     size?: StyleSizeType;
@@ -14,11 +15,11 @@ function Label({ size = "medium", className, children, ...props }: LabelProps) {
     };
 
     return (
-        <Text
+        <TextComponent
             className={twMerge("font-semibold ml-0.5", LABEL_SIZE_STYLES[size], className)}
             {...props}>
             {children}
-        </Text>
+        </TextComponent>
     );
 }
 export default Label;

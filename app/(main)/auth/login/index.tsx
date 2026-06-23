@@ -1,7 +1,7 @@
 import { Text } from "react-native";
 
 function AuthLoginPage() {
-    return<Text></Text>
+    return<Text>login</Text>
 }
 
 export default AuthLoginPage;

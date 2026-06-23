@@ -12,6 +12,7 @@ function ErrorMessage({ size = "medium", className, children, ...props }: ErrorM
         medium: "text-xs mt-1",
         large: "text-sm mt-2",
     };
+
     return (
         <Text
             className={twMerge("text-error-main ml-0.5", ERROR_SIZE_STYLES[size], className)}

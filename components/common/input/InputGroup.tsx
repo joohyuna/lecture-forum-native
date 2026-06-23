@@ -1,9 +1,9 @@
 import { TextInputProps, View } from "react-native";
 import { StyleSizeType } from "@/types/style";
 import { twMerge } from "tailwind-merge";
-import Label from "@/components/form/Label";
+import Label from "@/components/common/form/Label";
 
-import ErrorMessage from "@/components/form/ErrorMessage";
+import ErrorMessage from "@/components/common/form/ErrorMessage";
 import Input from "@/components/common/input/Input";
 
 interface InputGroupProps extends TextInputProps {
