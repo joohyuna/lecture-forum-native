@@ -3,9 +3,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useThemeStore } from "@/store/theme/useThemeStore";
 import Button from "@/components/common/button/Button";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { Role } from "@/types/user";
 
 function MainHeader() {
     const { theme, onChangeTheme } = useThemeStore();
+    const { isLoggedIn, user, logout } = useAuthStore();
 
     return (
         <View className={"w-full h-16 bg-background-paper border-b border-divider"}>
@@ -27,16 +30,33 @@ function MainHeader() {
                             className={"text-text-default"}
                         />
                     </Pressable>
-                    <Link href={"/auth/login"} asChild>
-                        <Button color={"primary"} variant={"text"}>
-                            로그인
-                        </Button>
-                    </Link>
-                    <Link href={"/auth/register"} asChild>
-                        <Button variant={"contained"} color={"primary"}>
-                            회원가입
-                        </Button>
-                    </Link>
+                    {isLoggedIn ? (
+                        <View className={"flex-row item-center gap-1"}>
+                            {user?.role === Role.ADMIN && (
+                                <Link href={"/admin"} asChild>
+                                    <Button variant={"outlined"} color={"primary"}>
+                                        관리자 화면
+                                    </Button>
+                                </Link>
+                            )}
+                            <Button variant={"contained"} color={"error"} onPress={logout}>
+                                로그아웃
+                            </Button>
+                        </View>
+                    ) : (
+                        <View className={"flex-row items-center gap-1"}>
+                            <Link href={"/auth/login"} asChild>
+                                <Button color={"primary"} variant={"text"}>
+                                    로그인
+                                </Button>
+                            </Link>
+                            <Link href={"/auth/register"} asChild>
+                                <Button variant={"contained"} color={"primary"}>
+                                    회원가입
+                                </Button>
+                            </Link>
+                        </View>
+                    )}
                 </View>
             </View>
         </View>

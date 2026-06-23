@@ -3,7 +3,7 @@ import { create } from "axios";
 // React는 VITE를 통해 구동을 시켰기 때문에 환경번수의 접두사가 VITE_로 시작함
 // React-Native + Expo 환경에서는 VITE_ 대신 EXPO_PUBLIC_으로 접두사가 시작함
 
-const BASE_URL = process.env.EXPO_PUBLIC_APP_BASE_URL || "";
+const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || "";
 
 const api = create({
     baseURL: BASE_URL,  // 직접 주소를 코드 상에 기재하지 않고, 환경변수를 통해 값을 집어 넣어야 함

@@ -6,8 +6,7 @@ import { RegisterUserInputType, registerUserSchema } from "@/schemas/user/regist
 import { twMerge } from "tailwind-merge";
 import Card from "@/components/common/card/Card";
 import InputGroup from "@/components/common/input/InputGroup";
-import ErrorMessage from "@/components/common/form/ErrorMessage";  // @단축이 되지 않아서 경로로 찾음
-// import ErrorMessage from "@/components/form/ErrorMessage";
+import ErrorMessage from "@/components/common/form/ErrorMessage";
 import Button from "@/components/common/button/Button";
 import userApi from "@/api/user/userApi";
 import { isAxiosError } from "axios";
@@ -22,9 +21,9 @@ function AuthRegisterPage() {
         control,
         handleSubmit,
         setError,
-        formState: { errors, isSubmitting },
+        formState: { errors, isSubmitting },  // isSubmitting 현재 서버로 데이터를 보내는 중인지 여부
     } = useForm({
-        resolver: zodResolver(registerUserSchema),
+        resolver: zodResolver(registerUserSchema),  // zodResolver 로 입력값 검증
         mode: "onTouched",
         defaultValues: {
             username: "",
@@ -41,10 +40,14 @@ function AuthRegisterPage() {
     const onSubmit = async (data: RegisterUserInputType) => {
         try {
             const { confirmPassword, ...submitData } = data;
+
+            // string 에는 slice(시작인덱스, 끝 전 인덱스)
+            const formattedDate = data.birthdate && data.birthdate !== "" ? data.birthdate.slice(0, 4) + "-" + data.birthdate.slice(4, 6) + "-" + data.birthdate.slice(6, 8) : undefined
+            //
             const payload = {
                 ...submitData,
                 phoneNumber: data.phoneNumber === "" ? undefined : data.phoneNumber,
-                birthdate: data.birthdate === "" ? undefined : data.birthdate,
+                birthdate: formattedDate,
             };
 
             await userApi.registerUser(payload);
@@ -251,7 +254,6 @@ function AuthRegisterPage() {
                         }}
                     />
 
-                    {/* 성별 입력 Select는 내일 합시다 */}
                     <Controller
                         control={control}
                         name={"gender"}
