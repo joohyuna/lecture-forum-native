@@ -25,8 +25,9 @@ function LoadingIndicator({
                     className={twMerge(
                         ["absolute", "inset-0"],
                         ["bg-background-default", "opacity-70"],
-                    )}
-                ></View>
+                    )} />
+                {/* 하위에 자식이 없을때  */}
+
                 <ActivityIndicator size={size} color={color} {...props} />
             </View>
         );

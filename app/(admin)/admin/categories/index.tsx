@@ -2,7 +2,7 @@ import TextComponent from "@/components/common/text/TextComponent";
 
 import { useEffect, useState } from "react";
 import { Category } from "@/types/category";
-import { Link, useRouter } from "expo-router";
+import { Link} from "expo-router";
 import adminCategoryApi from "@/api/admin/adminCategoryApi";
 import { Alert, Platform, Pressable, ScrollView, View } from "react-native";
 import LoadingIndicator from "@/components/common/loading/LoadingIndicator";
@@ -14,7 +14,6 @@ import Badge from "@/components/common/badge/Badge";
 import { Feather } from "@expo/vector-icons";
 
 function AdminCategoryListPage() {
-    // const router = useRouter();
     const [list, setList] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
