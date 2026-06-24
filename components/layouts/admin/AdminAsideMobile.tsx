@@ -87,7 +87,7 @@ function AdminAsideMobile() {
                                             className={twMerge(
                                                 ["flex-row", "items-center", "gap-3"],
                                                 ["p-4", "rounded-xl"],
-                                                // 이 메뉴는 모바일 기준으로 만들어녀야 함
+                                                // 이 메뉴는 모바일 기준으로 만들어져야 함
                                                 // hover를 해줄 이유가 없음
                                                 // active: 클릭하고 있거나 터치하고 있는 순간 적용
                                                 isActive
@@ -121,10 +121,10 @@ function AdminAsideMobile() {
 
                     {/* 메뉴 하단 */}
                     <View className={twMerge(["p-4"], ["border-t", "border-divider"])}>
-                        <View className={twMerge(["flex-row", "items-center", "gap-3"])}>
+                        <View className={twMerge("mb-4", ["flex-row", "items-center", "gap-3"])}>
                             <View
                                 className={twMerge(
-                                    ["w-12", "h-12", "justify-center"],
+                                    ["w-12", "h-12", "justify-center", "items-center"],
                                     ["bg-primary-main", "rounded-full"],
                                 )}>
                                 <Feather

@@ -15,8 +15,8 @@ import { useEffect, useState } from "react";
 import LoadingIndicator from "@/components/common/loading/LoadingIndicator";
 
 function AdminCategoryUpdatePage() {
-    // expo가 동적라우팅으로 된 주소에 값을 id라고 하는 변수로 전달해줄 것읨
-    // React에서 동적라우틴으로 전달된 값을 꺼내는 hook은 useParams
+    // expo가 동적라우팅으로 된 주소에 값을 id라고 하는 변수로 전달해줄 임
+    // React에서 동적라우팅으로 전달된 값을 꺼내는 hook은 useParams
     // Expo에서 동적라우팅으로 전달된 값을 꺼내는 hook은 useLocalSearchParams
 
     const { id } = useLocalSearchParams<{ id: string }>();

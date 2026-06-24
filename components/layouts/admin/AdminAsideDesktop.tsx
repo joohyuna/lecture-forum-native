@@ -28,10 +28,11 @@ function AdminAsideDesktop() {
                 </Link>
 
                 <View className={"px-3 py-4 gap-1"}>
-                    {/* TODO: 실제 메뉴판 */}
+                    {/* 실제 메뉴판 */}
                     {ADMIN_NAV_LIST.map(item => {
                         // 지금 사용자가 보고 있는 화면이 어떤 메뉴에 속하는지 강조
-                        const isActive = item.path === "/" ? pathname === "/" : pathname.startsWith(item.path);
+                        const isActive =
+                            item.path === "/" ? pathname === "/" : pathname.startsWith(item.path);
 
                         // pathname: /admin   /admin/categories     /admin/users
                         // item.path :
@@ -49,13 +50,19 @@ function AdminAsideDesktop() {
                                         name={item.icon as any}
                                         size={18}
                                         className={
-                                            isActive ? "text-text-default" : "text-text-secondary"
+                                            // isActive ? "text-text-default" : "text-text-secondary"  // 원본소스
+                                            isActive
+                                                ? "text-primary-contrast" // light 폰트 색상이 않보여서 내 맘대로 수정
+                                                : "text-text-secondary"
                                         }
                                     />
                                     <TextComponent
                                         className={twMerge(
                                             "font-bold",
-                                            isActive ? "text-text-default" : "text-text-default",
+                                            // isActive ? "text-text-default" : "text-text-default", //원본소스
+                                            isActive
+                                                ? "text-primary-contrast" // light 폰트 색상이 않보여서 내 맘대로 수정
+                                                : "text-text-default",
                                         )}>
                                         {item.label}
                                     </TextComponent>
