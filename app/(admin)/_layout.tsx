@@ -6,13 +6,13 @@ import AdminAsideMobile from "@/components/layouts/admin/AdminAsideMobile";
 
 function AdminLayout() {
     // tailwind을 통해서 "반응형 디자인"을 적용 시키는 것은
-    // 작은 화면부너 큰화면으로 적용시킨
-    // sm:(648px)   md: (768px)  lg:(1024px)   xl: (1280px) 형태로서 앞에 접두사를 붙임
+    // 작은 화면부터 큰화면으로 적용시킨
+    // sm:(648px)  |  md: (768px) | lg:(1024px) | xl: (1280px) 형태로서 앞에 접두사를 붙임
     // flex-col md:flex-row   => 기본값으로 flex-direction: column이 적용 되지만
     //                          브라우저 크기가 768px 이 넘으로 flex-direction: row로 적용 된다.
     return (
         <View className={twMerge(["flex-1", "flex-col", "md:flex-row"])}>
-            {/* hidden -> display: hidden  , flex -> display: flex */}
+            {/* hidden -> display: hidden  , flex -> display: flex  중복도 되고 덮어쓰기 가능*/}
             {/* 화면이 작을 때 (기본값)은 hidde이 적용될 것이고, 화면에 768px를 넘어가면 flex로 적용 */}
             <View className={twMerge("hidden", "md:flex", "h-full")}>
                 <AdminAsideDesktop />
