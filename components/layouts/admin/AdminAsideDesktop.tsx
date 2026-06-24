@@ -50,7 +50,6 @@ function AdminAsideDesktop() {
                                         name={item.icon as any}
                                         size={18}
                                         className={
-                                            // isActive ? "text-text-default" : "text-text-secondary"  // 원본소스
                                             isActive
                                                 ? "text-primary-contrast" // light 폰트 색상이 않보여서 내 맘대로 수정
                                                 : "text-text-secondary"
@@ -59,7 +58,7 @@ function AdminAsideDesktop() {
                                     <TextComponent
                                         className={twMerge(
                                             "font-bold",
-                                            // isActive ? "text-text-default" : "text-text-default", //원본소스
+
                                             isActive
                                                 ? "text-primary-contrast" // light 폰트 색상이 않보여서 내 맘대로 수정
                                                 : "text-text-default",
