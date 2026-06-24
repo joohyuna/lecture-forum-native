@@ -69,9 +69,11 @@ function AdminCategoryListPage() {
             <Title
                 title={"카테고리 관리"}
                 description={"서비스의 토론장 카테고리를 관리하고 생성할 수 있습니다."}>
-                <Button variant={"contained"} color={"primary"}>
-                    + 카테고리 생성
-                </Button>
+                <Link href={"/admin/categories/create"} asChild>
+                    <Button variant={"contained"} color={"primary"}>
+                        + 카테고리 생성
+                    </Button>
+                </Link>
             </Title>
 
             <Card className={twMerge(["flex-1", "overflow-hidden"])}>

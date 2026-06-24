@@ -1,10 +1,16 @@
 import axiosInstance from "@/api/axiosInstance";
 import { Category } from "@/types/category";
+import { AdminCategoryInputType } from "@/schemas/admin/adminCategorySchema";
 
 const getCategoryList = async (): Promise<Category[]> => {
     const response = await axiosInstance.get("/admin/category/list");
     return response.data.data;
 };
+
+const createCategory = async (input: AdminCategoryInputType): Promise<Category> => {
+    const response = await axiosInstance.post("/admin/category/create", input);
+    return response.data.data;
+}
 
 const toggleCategoryStatus = async (id: number): Promise<Category> => {
     const response = await axiosInstance.patch(`/admin/category/${id}/status`);
@@ -14,4 +20,5 @@ const toggleCategoryStatus = async (id: number): Promise<Category> => {
 export default {
     getCategoryList,
     toggleCategoryStatus,
+    createCategory,
 };
