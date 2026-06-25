@@ -44,7 +44,7 @@ function AdminAsideMobile() {
                 </Pressable>
             </View>
 
-            {/*    화면에 햄버거 아이콘을 누르면 튀어나와야 되는 메뉴 View */}
+            {/* 화면에 햄버거 아이콘을 누르면 튀어나와야 되는 메뉴 View */}
             <Modal visible={isMenuOpen} transparent={true} animationType={"slide"}>
                 <View className={twMerge("flex-1", "justify-between", "bg-background-paper")}>
                     {/* 메뉴 상단 */}
