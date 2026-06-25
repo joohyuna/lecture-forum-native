@@ -1,7 +1,7 @@
 import TextComponent from "@/components/common/text/TextComponent";
 
-function AdminUsersCreatePage() {
+function AdminUserCreatePage() {
     return <TextComponent>edit</TextComponent>
 }
 
-export default AdminUsersCreatePage;
+export default AdminUserCreatePage;

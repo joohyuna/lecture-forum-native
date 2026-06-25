@@ -10,6 +10,7 @@ import Button from "@/components/common/button/Button";
 import Card from "@/components/common/card/Card";
 import Badge from "@/components/common/badge/Badge";
 import { Feather } from "@expo/vector-icons";
+import Pagination from "@/components/common/pagination/Pagination";
 
 function AdminUserListPage() {
     const [list, setList] = useState<User[]>([]);
@@ -45,6 +46,8 @@ function AdminUserListPage() {
         // 불러오는 함수 실행
         loadUsers(currentPage, pageSize).then(() => {});
     }, [currentPage, pageSize]);
+
+    const totalPage = Math.ceil(total / pageSize) || 1;
 
     const handleDeleteUser = async (id: number) => {
         const executeDelete = async () => {
@@ -153,9 +156,14 @@ function AdminUserListPage() {
                                         {item.username}
                                     </TextComponent>
                                     {item.deletedAt && (
-                                        <Badge color={"error"} size={"small"} variant={"outlined"}>
-                                            탈퇴
-                                        </Badge>
+                                        <TextComponent>
+                                            <Badge
+                                                color={"error"}
+                                                size={"small"}
+                                                variant={"outlined"}>
+                                                탈퇴
+                                            </Badge>
+                                        </TextComponent>
                                     )}
                                 </View>
                                 <TextComponent
@@ -217,6 +225,16 @@ function AdminUserListPage() {
                     ))}
                 </ScrollView>
             </Card>
+            <Pagination
+                currentPage={currentPage}
+                totalPage={totalPage}
+                onPageChange={newPage =>
+                    router.setParams({ page: String(newPage), size: String(pageSize) })
+                }
+                size={"medium"}
+                color={"primary"}
+                shape={"rounded"}
+            />
         </View>
     );
 }
