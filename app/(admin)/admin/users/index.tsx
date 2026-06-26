@@ -22,7 +22,7 @@ function AdminUserListPage() {
     // 동적라우팅 값을 가져오는 것 : useParams();
     // 쿼리스트링 값을 가져오는것 : useSearchParams();
     // React-Native ----------------
-    // 동적라우팅이이든, 쿼리스트링이든 : useLocalSearchParams()
+    // 동적라우팅이든, 쿼리스트링이든 : useLocalSearchParams()
     const { page, size } = useLocalSearchParams<{ page: string; size: string }>();
     const currentPage = Number(page) || 1;
     const pageSize = Number(size) || 20;
@@ -233,7 +233,7 @@ function AdminUserListPage() {
                 }
                 size={"medium"}
                 color={"primary"}
-                shape={"rounded"}
+                shape={"square"}
             />
         </View>
     );
