@@ -1,4 +1,3 @@
-import TextComponent from "@/components/common/text/TextComponent";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

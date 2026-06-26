@@ -27,7 +27,7 @@ function Textarea({
     return (
         <TextInput
             multiline={true}
-            textAlignVertical={"top"} // 안드로이드에서 TextInput에 입력하는 택스트는 yc축 중앙에 정렬됨
+            textAlignVertical={"top"} // 안드로이드에서 TextInput에 입력하는 택스트는 y축 중앙에 정렬됨 그래서 top으로 수정
             className={twMerge(
                 ["w-full", "p-4", "min-h-32"],
                 ["bg-background-default", "rounded-lg", "border", "text-text-default"],
@@ -37,7 +37,8 @@ function Textarea({
                 className,
             )}
             placeholderClassName={twMerge("text-text-secondary", placeholderClassName)}
-            {...props} />
+            {...props}
+        />
     );
 }
 
