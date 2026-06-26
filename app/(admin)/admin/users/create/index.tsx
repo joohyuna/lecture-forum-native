@@ -318,11 +318,11 @@ function AdminUserCreatePage() {
 
                     <View
                         className={twMerge("mt-10", [
-                            "flex-row",
-                            "justify-end",
-                            "items-center",
-                        ]
-                        , "gap-3")}>
+                                "flex-row",
+                                "justify-end",
+                                "items-center",
+                            ]
+                            , "gap-3")}>
                         <Button variant={"outlined"} color={"secondary"} onPress={() => router.push("/admin/users")}>취소</Button>
                         <Button variant={"contained"} color={"primary"} onPress={handleSubmit(onSubmit)} disabled={isSubmitting}>
                             {isSubmitting ? "등록 중..." : "등록"}

@@ -1,19 +1,22 @@
+// import { ActivityIndicator, ActivityIndicatorProps, View } from "react-native";
+// import { twMerge } from "tailwind-merge";
+
 import { ActivityIndicator, ActivityIndicatorProps, View } from "react-native";
 import { twMerge } from "tailwind-merge";
 
 interface LoadingIndicatorProps extends ActivityIndicatorProps {
-    fullscreen?: boolean; // 로딩 컴포넌트가 전체 화면의 중심에서 들어가길 원하면 true
-    // false라면 사용되는 그 자리에 빙글 비글 sp
+    fullScreen?: boolean; // 로딩 컴포넌트가 전체 화면의 중심에 들어가길 원하면 true
+    // false라면 사용되는 그 자리에 빙글빙글 spinner가 들어갈 것임
 }
 
 function LoadingIndicator({
-    fullscreen = false,
+    fullScreen = false,
     size = "large",
     color = "#3B82F6",
     className,
     ...props
 }: LoadingIndicatorProps) {
-    if (fullscreen) {
+    if (fullScreen) {
         return (
             <View
                 className={twMerge(
@@ -21,17 +24,19 @@ function LoadingIndicator({
                     ["justify-center", "items-center"],
                     className,
                 )}>
+                {/* 배경 */}
                 <View
                     className={twMerge(
                         ["absolute", "inset-0"],
                         ["bg-background-default", "opacity-70"],
-                    )} />
-                {/* 하위에 자식이 없을때  */}
+                    )}
+                />
 
                 <ActivityIndicator size={size} color={color} {...props} />
             </View>
         );
     }
+
     return (
         <View className={twMerge(["py-10", "justify-center", "items-center"], className)}>
             <ActivityIndicator size={size} color={color} {...props} />

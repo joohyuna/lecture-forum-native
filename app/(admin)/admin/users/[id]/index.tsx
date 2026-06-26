@@ -2,10 +2,6 @@ import TextComponent from "@/components/common/text/TextComponent";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    AdminCreateUserInputType,
-    adminCreateUserSchema,
-} from "@/schemas/user/adminCreateUserSchema";
 import { Gender, Role } from "@/types/user";
 import { isAxiosError } from "axios";
 import adminUserApi from "@/api/admin/adminUserApi";
