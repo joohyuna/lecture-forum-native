@@ -1,5 +1,5 @@
 import TextComponent from "@/components/common/text/TextComponent";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -16,18 +16,27 @@ import InputGroup from "@/components/common/input/InputGroup";
 import SelectGroup from "@/components/common/select/SelectGroup";
 import ErrorMessage from "@/components/common/form/ErrorMessage";
 import Button from "@/components/common/button/Button";
+import {
+    AdminUpdateUserInputType,
+    adminUpdateUserSchema,
+} from "@/schemas/user/adminUpdateUserSchema";
+import { useEffect, useState } from "react";
+import LoadingIndicator from "@/components/common/loading/LoadingIndicator";
 
-
-function AdminUserCreatePage() {
+function AdminUserUpdatePage() {
     const router = useRouter();
+    const { id } = useLocalSearchParams<{ id: string }>();
+    const userId = Number(id);
+    const [isLoading, setIsLoading] = useState(true);
 
     const {
         control,
         handleSubmit,
+        reset,
         setError,
         formState: { errors, isSubmitting },
     } = useForm({
-        resolver: zodResolver(adminCreateUserSchema),
+        resolver: zodResolver(adminUpdateUserSchema),
         mode: "onTouched",
         defaultValues: {
             username: "",
@@ -42,13 +51,53 @@ function AdminUserCreatePage() {
         },
     });
 
-    const onSubmit = async (data: AdminCreateUserInputType) => {
-        try {
-            // phoneNumber에 대해서 처리 => 데이터베이스에서도 varchar
-            // birthdate에 대해서 처리 => 우라가 입력 받을 때 YYYYMMDD 받지만
-            //                            사용자가 입력한 값이 잇다면 YYYY-MM-DD 형식으로 보내야 함
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const result = await adminUserApi.getUserById(userId);
 
-            const { phoneNumber, birthdate, ...prevInput } = data;
+                // birthdate : "2026-12-25 14:33:11" -> "20261225"
+                // password : 넣어주면 안됨
+                // phoneNumber도 값이 없으면 빈 스트링을 input에 넣어줘야 함
+
+                let formattedBirthdate = "";
+                if (result.birthdate) {
+                    // 백엔드에서 받아온 정보 중 birthdate를 0번부터 10번 문자까지 자르고
+                    // /-/g 정규식을 통해 - 를 없앰
+                    formattedBirthdate = result.birthdate.substring(0, 10).replace(/-/g, "");
+                }
+                reset({
+                    username: result.username,
+                    password: "",
+                    name: result.name,
+                    nickname: result.nickname,
+                    email: result.email,
+                    phoneNumber: result.phoneNumber || "",
+                    birthdate: formattedBirthdate,
+                    gender: result.gender,
+                    role: result.role,
+                });
+            } catch (error) {
+                console.log(error);
+                if (Platform.OS === "web") {
+                    alert("유저 정보를 불러오는데 실패했습니다.");
+                    router.back();
+                } else {
+                    Alert.alert("오류", "유저 정보를 불러오는데 실패했습니다.", [
+                        { text: "확인", onPress: () => router.back() },
+                    ]);
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadUser().then(() => {});
+    }, [reset, router, userId]);
+
+    const onSubmit = async (data: AdminUpdateUserInputType) => {
+        try {
+            const { phoneNumber, birthdate, password, ...prevInput } = data;
             let formattedBirthdate;
             if (birthdate && birthdate.length === 8) {
                 const year = birthdate.slice(0, 4);
@@ -60,37 +109,24 @@ function AdminUserCreatePage() {
                 formattedBirthdate = undefined;
             }
 
-            await adminUserApi.createUser({
+            await adminUserApi.updateUser(userId, {
                 ...prevInput,
                 phoneNumber: phoneNumber || undefined,
                 birthdate: formattedBirthdate || undefined,
+                password: password || undefined,
             });
 
             if (Platform.OS === "web") {
                 alert("유저가 성공적으로 생성되었습니다.");
                 router.back();
             } else {
-                Alert.alert("생성완료", "유저가 성공적으로 생성되었습니다.", [
+                Alert.alert("생성 완료", "유저가 성공적으로 생성되었습니다.", [
                     { text: "확인", onPress: () => router.back() },
                 ]);
             }
         } catch (error) {
-            // 에러가 났을 때 확인해야 되는거
-            // 1. 개발자 도구의 console
-            // 2. 네트워크 상의 statusCode
-            //    요청이 진행된 주소 확인
-            //    백엔드가 뱉어준 응답내용
-            // 3. 300번대, 400번재 에러면
-            //    프론트엔드에서 잘못된 것이고
-            //    500번대 에러면
-            //    백엔드에서도 try-catch안에
-            //    console.log가 있기 때문에
-            //    백엔드 측 웹스톰에서 확인 가능
             console.log(error);
 
-            // axios 에러 + 백엔드가 응답 있음
-            // - 409일 때
-            // - 그외
             if (isAxiosError(error) && error.response) {
                 // 지금 이 error가 axios error이고, response (백엔드에서 한 응답)가 존재한다면
                 const errorMessage = error.response.data.message;
@@ -109,19 +145,22 @@ function AdminUserCreatePage() {
 
                 setError("root", { message: errorMessage });
             } else {
-                // axion 에러가 아니거나, 백엔드 응답이 없고
                 setError("root", { message: "알 수 없는 오류가 발생했습니다." });
             }
         }
     };
 
+    if (isLoading) {
+        return <LoadingIndicator fullScreen />;
+    }
+
     return (
         <View className={twMerge("flex-1", "w-full")}>
-            <Title title={"유저 생성"} description={"새로운 관리자 또는 일반 유저를 등록합니다."} />
+            <Title title={"유저 정보 수정"} description={"가입된 유저의 정보를 수정합니다."} />
 
             <ScrollView
                 className={twMerge(
-                    ["fle-1", "p-6"],
+                    ["flex-1", "p-6"],
                     ["bg-background-paper", "rounded-xl", "border", "border-divider"],
                 )}>
                 <View>
@@ -138,13 +177,14 @@ function AdminUserCreatePage() {
                                     label={"아이디"}
                                     placeholder={"4자 이상 입력해주세요"}
                                     onBlur={onBlur}
-                                    onChangeText={onChange} // HTML onChange 속성 =>  React-Native onChangeText 속성
+                                    onChangeText={onChange} // HTML onChange 속성 => React-Native onChangeText 속성
                                     value={value}
                                     errorMessage={errors.username?.message}
                                 />
                             );
                         }}
                     />
+
                     <Controller
                         control={control}
                         name={"password"}
@@ -154,14 +194,15 @@ function AdminUserCreatePage() {
                                     label={"비밀번호"}
                                     placeholder={"6자 이상 입력해주세요"}
                                     onBlur={onBlur}
-                                    onChangeText={onChange} // HTML onChange 속성 =>  React-Native onChangeText 속성
+                                    onChangeText={onChange} // HTML onChange 속성 => React-Native onChangeText 속성
+                                    secureTextEntry={true}
                                     value={value}
                                     errorMessage={errors.password?.message}
-                                    secureTextEntry={true}
                                 />
                             );
                         }}
                     />
+
                     <Controller
                         control={control}
                         name={"email"}
@@ -169,17 +210,18 @@ function AdminUserCreatePage() {
                             return (
                                 <InputGroup
                                     label={"이메일"}
-                                    placeholder={"example@admin.com"}
+                                    placeholder={"example@domain.com"}
                                     onBlur={onBlur}
-                                    onChangeText={onChange} // HTML onChange 속성 =>  React-Native onChangeText 속성
-                                    value={value}
-                                    errorMessage={errors.email?.message}
                                     keyboardType={"email-address"}
                                     autoCapitalize={"none"}
+                                    onChangeText={onChange} // HTML onChange 속성 => React-Native onChangeText 속성
+                                    value={value}
+                                    errorMessage={errors.email?.message}
                                 />
                             );
                         }}
                     />
+
                     <View className={twMerge("border-b", "border-divider", "my-6")} />
 
                     <TextComponent className={twMerge("mb-4", ["text-lg", "font-bold"])}>
@@ -197,7 +239,7 @@ function AdminUserCreatePage() {
                                         placeholder={"실명 입력"}
                                         onBlur={onBlur}
                                         wrap={true}
-                                        onChangeText={onChange} // HTML onChange 속성 =>  React-Native onChangeText 속성
+                                        onChangeText={onChange} // HTML onChange 속성 => React-Native onChangeText 속성
                                         value={value}
                                         errorMessage={errors.name?.message}
                                     />
@@ -214,7 +256,7 @@ function AdminUserCreatePage() {
                                         placeholder={"서비스에서 사용할 닉네임 (2~10자)"}
                                         onBlur={onBlur}
                                         wrap={true}
-                                        onChangeText={onChange} // HTML onChange 속성 =>  React-Native onChangeText 속성
+                                        onChangeText={onChange} // HTML onChange 속성 => React-Native onChangeText 속성
                                         value={value}
                                         errorMessage={errors.nickname?.message}
                                     />
@@ -222,6 +264,7 @@ function AdminUserCreatePage() {
                             }}
                         />
                     </View>
+
                     <View className={twMerge("flex-col", "md:flex-row", "md:gap-4")}>
                         <Controller
                             control={control}
@@ -230,11 +273,11 @@ function AdminUserCreatePage() {
                                 return (
                                     <InputGroup
                                         label={"전화번호 (선택)"}
-                                        placeholder={"010-0000-0000"}
+                                        placeholder={"010-0000-000"}
                                         onBlur={onBlur}
                                         wrap={true}
                                         keyboardType={"phone-pad"}
-                                        onChangeText={onChange} // HTML onChange 속성 =>  React-Native onChangeText 속성
+                                        onChangeText={onChange} // HTML onChange 속성 => React-Native onChangeText 속성
                                         value={value}
                                         errorMessage={errors.phoneNumber?.message}
                                     />
@@ -253,7 +296,7 @@ function AdminUserCreatePage() {
                                         wrap={true}
                                         keyboardType={"number-pad"}
                                         maxLength={8}
-                                        onChangeText={onChange} // HTML onChange 속성 =>  React-Native onChangeText 속성
+                                        onChangeText={onChange} // HTML onChange 속성 => React-Native onChangeText 속성
                                         value={value}
                                         errorMessage={errors.birthdate?.message}
                                     />
@@ -261,6 +304,7 @@ function AdminUserCreatePage() {
                             }}
                         />
                     </View>
+
                     <View className={twMerge("border-b", "border-divider", "my-6")} />
 
                     <TextComponent className={twMerge("mb-4", ["text-lg", "font-bold"])}>
@@ -283,11 +327,12 @@ function AdminUserCreatePage() {
                                         value={value}
                                         onSelect={onChange}
                                         errorMessage={errors.gender?.message}
-                                        wrap // 아무것도 않쓰면 true
-                                    /> // <--- 이 부분에 닫는 태그를 추가했습니다.
+                                        wrap
+                                    />
                                 );
                             }}
                         />
+
                         <Controller
                             control={control}
                             name={"role"}
@@ -295,16 +340,16 @@ function AdminUserCreatePage() {
                                 return (
                                     <SelectGroup
                                         options={[
-                                            { label: "관리자(ADMIN)", value: "ADMIN" },
-                                            { label: "사용자(USER)", value: "USER" },
+                                            { label: "관리자 (ADMIN)", value: "ADMIN" },
+                                            { label: "사용자 (USER)", value: "USER" },
                                         ]}
                                         label={"권한 설정"}
                                         placeholder={"권한을 설정해주세요"}
                                         value={value}
                                         onSelect={onChange}
                                         errorMessage={errors.role?.message}
-                                        wrap // 아무것도 않쓰면 true
-                                    /> // <--- 이 부분에 닫는 태그를 추가했습니다.
+                                        wrap
+                                    />
                                 );
                             }}
                         />
@@ -317,15 +362,23 @@ function AdminUserCreatePage() {
                     )}
 
                     <View
-                        className={twMerge("mt-10", [
-                            "flex-row",
-                            "justify-end",
-                            "items-center",
-                        ]
-                        , "gap-3")}>
-                        <Button variant={"outlined"} color={"secondary"} onPress={() => router.push("/admin/users")}>취소</Button>
-                        <Button variant={"contained"} color={"primary"} onPress={handleSubmit(onSubmit)} disabled={isSubmitting}>
-                            {isSubmitting ? "등록 중..." : "등록"}
+                        className={twMerge(
+                            "mt-10",
+                            ["flex-row", "justify-end", "items-center"],
+                            "gap-3",
+                        )}>
+                        <Button
+                            variant={"outlined"}
+                            color={"secondary"}
+                            onPress={() => router.back()}>
+                            취소
+                        </Button>
+                        <Button
+                            variant={"contained"}
+                            color={"primary"}
+                            onPress={handleSubmit(onSubmit)}
+                            disabled={isSubmitting}>
+                            {isSubmitting ? "수정 중..." : "수정"}
                         </Button>
                     </View>
                 </View>
@@ -334,4 +387,4 @@ function AdminUserCreatePage() {
     );
 }
 
-export default AdminUserCreatePage;
+export default AdminUserUpdatePage;
