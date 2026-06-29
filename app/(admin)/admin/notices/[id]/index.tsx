@@ -132,7 +132,7 @@ function AdminNoticeDetailPage() {
                                 variant={"contained"}
                                 color={"warning"}
                                 onPress={() =>
-                                    router.push(`//admin/notices/${notice.id / update}`)
+                                    router.push(`/admin/notices/${notice.id}/update}`)
                                 }>
                                 수정
                             </Button>

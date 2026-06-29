@@ -79,7 +79,7 @@ function AdminCategoryUpdatePage() {
     };
 
     if (isLoading) {
-        return <LoadingIndicator  fullscreen={true} />
+        return <LoadingIndicator  fullScreen={true} />
     }
     return (
         <View className={twMerge("flex-1", "w-full")}>
