@@ -13,8 +13,12 @@ const getNoticeList = async (page: number = 1, size: number = 20): Promise<Pagin
     return response.data.data;
 };
 
-
+const getNoticeById = async (id: number): Promise<Notice> => {
+    const response = await axiosInstance.get(`/notice/${id}`);
+    return response.data.data;
+}
 
 export default {
     getNoticeList,
+    getNoticeById,
 };
