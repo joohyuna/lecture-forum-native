@@ -4,15 +4,15 @@ import { useThemeStore } from "@/store/theme/useThemeStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useEffect, useState } from "react";
 import { Category } from "@/types/category";
-import categoryApi from "@/api/user/categoryApi";
 import { Modal, Pressable, ScrollView, View } from "react-native";
 import { twMerge } from "tailwind-merge";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { MYPAGE_NAV_LIST } from "@/constants/menu";
 import Button from "@/components/common/button/Button";
-import { valibotResolver } from "@hookform/resolvers/valibot/src";
 import { Role } from "@/types/user";
+import categoryApi from "@/api/user/categoryApi";
+import Accordion from "@/components/common/accordion/Accordion";
 
 function MainHeaderMobile() {
     const router = useRouter();
@@ -39,12 +39,12 @@ function MainHeaderMobile() {
     const handleNavigate = (path: string) => {
         setIsMenuOpen(false);
         router.push(path);
-    }
+    };
 
     const handleLogout = () => {
         setIsMenuOpen(false);
         logout();
-    }
+    };
 
     return (
         <View
@@ -147,24 +147,38 @@ function MainHeaderMobile() {
                                 ["mb-8", "bg-background-default", "rounded-xl"],
                                 ["border", "border-divider"],
                             )}>
-                            {list.map(item => (
-                                <Pressable
-                                    key={item.id}
-                                    className={twMerge(
-                                        ["px-8", "py-3"],
-                                        ["active:bg-background-default", "transition-all"],
-                                    )}
-                                    onPress={() => handleNavigate(`/categories/${item.id}`)}>
-                                    <TextComponent className={twMerge("font-medium")}>
-                                        {item.name}
+                            <Accordion
+                                defaultExpanded={true}
+                                title={"토론장"}
+                                className={twMerge("border-b", "border-divider")}>
+                                {list.length === 0 && (
+                                    <TextComponent
+                                        className={twMerge(
+                                            ["p-4", "text-center"],
+                                            ["text-text-secondary", "text-sm"],
+                                        )}>
+                                        카테고리가 없습니다.
                                     </TextComponent>
-                                </Pressable>
-                            ))}
+                                )}
+                                {list.map(item => (
+                                    <Pressable
+                                        key={item.id}
+                                        className={twMerge(
+                                            ["px-8", "py-3"],
+                                            ["active:bg-background-default", "transition-all"],
+                                        )}
+                                        onPress={() => handleNavigate(`/categories/${item.id}`)}>
+                                        <TextComponent className={twMerge("font-medium")}>
+                                            {item.name}
+                                        </TextComponent>
+                                    </Pressable>
+                                ))}
+                            </Accordion>
 
                             <Pressable
                                 onPress={() => handleNavigate("/notices")}
                                 className={twMerge(
-                                    ["px-8", "py-3"],
+                                    ["p-4"],
                                     ["active:bg-background-default", "transition-all"],
                                 )}>
                                 <TextComponent className={"font-medium"}>공지사항</TextComponent>
@@ -220,6 +234,7 @@ function MainHeaderMobile() {
                     </ScrollView>
 
                     {/* 사용자 부분 */}
+                    {/* 사용자 부분 */}
                     <View className={twMerge(["mt-4", "p-4", "border-t", "border-divider"])}>
                         {isLoggedIn ? (
                             <View
@@ -234,7 +249,7 @@ function MainHeaderMobile() {
                                     )}>
                                     <View>
                                         <TextComponent
-                                            className={twMerge(["font-bold", "text-lg"], "bg-1")}>
+                                            className={twMerge(["font-bold", "text-lg"], "mb-1")}>
                                             {user?.nickname} 님
                                         </TextComponent>
                                         <TextComponent
@@ -256,14 +271,14 @@ function MainHeaderMobile() {
                                             />
                                         </Pressable>
                                     )}
-                                    <Button
-                                        fullWidth
-                                        variant={"contained"}
-                                        color={"error"}
-                                        onPress={handleLogout}>
-                                        로그아웃
-                                    </Button>
                                 </View>
+                                <Button
+                                    fullWidth
+                                    variant={"contained"}
+                                    color={"error"}
+                                    onPress={handleLogout}>
+                                    로그아웃
+                                </Button>
                             </View>
                         ) : (
                             <View className={twMerge("flex-row", "gap-3")}>
@@ -275,7 +290,7 @@ function MainHeaderMobile() {
                                     로그인
                                 </Button>
                                 <Button
-                                    className={"fle-1"}
+                                    className={"flex-1"}
                                     variant={"contained"}
                                     color={"primary"}
                                     onPress={() => handleNavigate("/auth/register")}>
