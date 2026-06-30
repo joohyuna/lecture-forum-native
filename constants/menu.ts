@@ -8,7 +8,7 @@ export const ADMIN_NAV_LIST = [
 
 export const MYPAGE_NAV_LIST = [
     {path: "/my/profile", label: "회원정보 수정"},
-    {path: "/my/password", label: "비밀번호 벼경"},
+    {path: "/my/password", label: "비밀번호 변경"},
     {path: "/my/inquiry", label: "1:1문의 내역"},
     {path: "/my/withdraw", label: "회원탈퇴", isDanger: true}
-]
+];

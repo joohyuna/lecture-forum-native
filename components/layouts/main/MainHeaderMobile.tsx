@@ -2,39 +2,27 @@ import TextComponent from "@/components/common/text/TextComponent";
 import { Link, useRouter } from "expo-router";
 import { useThemeStore } from "@/store/theme/useThemeStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Category } from "@/types/category";
 import { Modal, Pressable, ScrollView, View } from "react-native";
 import { twMerge } from "tailwind-merge";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { MYPAGE_NAV_LIST } from "@/constants/menu";
 import Button from "@/components/common/button/Button";
 import { Role } from "@/types/user";
-import categoryApi from "@/api/user/categoryApi";
 import Accordion from "@/components/common/accordion/Accordion";
 
-function MainHeaderMobile() {
+interface Props {
+    list: Category[];
+}
+
+function MainHeaderMobile({ list }: Props) {
     const router = useRouter();
     const { theme, onChangeTheme } = useThemeStore();
     const { isLoggedIn, user, logout } = useAuthStore();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [list, setList] = useState<Category[]>([]);
-    // 카테고리의 정보를 불러오기 전이라도 로그아웃 등의 기능은 사용할 수 있어야 되므로
-    // isLoading는 없을 것임
-
-    useEffect(() => {
-        const loadCategories = async () => {
-            try {
-                const result = await categoryApi.getCategoryList();
-                setList(result);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        loadCategories().then(() => {});
-    }, []);
 
     const handleNavigate = (path: string) => {
         setIsMenuOpen(false);
@@ -53,6 +41,7 @@ function MainHeaderMobile() {
                 ["justify-center"],
                 ["border-b", "border-divider"],
             )}>
+            {/* 실제 상단에 출력되는 메뉴바 */}
             <View
                 className={twMerge(
                     ["flex-row", "justify-between", "items-center"],
@@ -63,7 +52,7 @@ function MainHeaderMobile() {
                         <Ionicons name={"chatbubbles"} size={26} className={"text-primary-main"} />
                         <TextComponent
                             className={twMerge(["text-xl", "font-extrabold", "text-primary-main"])}>
-                            토론 대난투
+                            토론대난투
                         </TextComponent>
                     </Pressable>
                 </Link>
@@ -75,11 +64,13 @@ function MainHeaderMobile() {
                             ["transition-all", "active:bg-background-default"],
                         )}>
                         <Ionicons
+                            onPress={onChangeTheme}
                             name={theme === "light" ? "sunny" : "moon"}
                             size={22}
                             className={twMerge("text-text-default")}
                         />
                     </Pressable>
+
                     <Pressable
                         onPress={() => setIsMenuOpen(true)}
                         className={twMerge(["p-2", "rounded-lg", "bg-background-default"])}>
@@ -87,12 +78,14 @@ function MainHeaderMobile() {
                     </Pressable>
                 </View>
             </View>
+
+            {/* 오픈되는 모달 메뉴 화면 */}
             <Modal
                 visible={isMenuOpen}
                 animationType={"slide"}
                 transparent={false}
                 onRequestClose={() => setIsMenuOpen(false)}>
-                <SafeAreaProvider className={twMerge("flex-1", "bg-background-paper")}>
+                <SafeAreaView className={twMerge("flex-1", "bg-background-paper")}>
                     {/* 헤더 부분 */}
                     <View
                         className={twMerge(
@@ -114,7 +107,7 @@ function MainHeaderMobile() {
                                     "font-extrabold",
                                     "text-primary-main",
                                 ])}>
-                                토론 대난투
+                                토론대난투
                             </TextComponent>
                         </Pressable>
 
@@ -124,23 +117,24 @@ function MainHeaderMobile() {
                             <Feather name={"x"} size={24} className={"text-text-default"} />
                         </Pressable>
                     </View>
-                    {/* 메뉴 부분 */}
 
+                    {/* 메뉴 부분 */}
                     <ScrollView
                         className={"flex-1"}
                         contentContainerStyle={{
                             flexGrow: 1,
-                            paddingHorizontal: 20, //
+                            paddingHorizontal: 20, // x축 방향 padding
                             paddingTop: 24,
                             paddingBottom: 40,
                         }}>
+                        {/* 메인 메뉴 영역 */}
                         <TextComponent
                             className={twMerge("mb-3", [
                                 "text-sm",
                                 "text-text-secondary",
                                 "font-extrabold",
                             ])}>
-                            메인메뉴
+                            메인 메뉴
                         </TextComponent>
                         <View
                             className={twMerge(
@@ -157,7 +151,7 @@ function MainHeaderMobile() {
                                             ["p-4", "text-center"],
                                             ["text-text-secondary", "text-sm"],
                                         )}>
-                                        카테고리가 없습니다.
+                                        카테고리가 없습니다
                                     </TextComponent>
                                 )}
                                 {list.map(item => (
@@ -184,56 +178,65 @@ function MainHeaderMobile() {
                                 <TextComponent className={"font-medium"}>공지사항</TextComponent>
                             </Pressable>
                         </View>
-                        {/*  마이메튜 영역 */}
-                        {isLoggedIn && (
-                            <TextComponent
-                                className={twMerge([
-                                    "font-extrabold",
-                                    "text-sm",
-                                    "text-text-secondary",
-                                    "mb-3",
-                                ])}>
-                                마이페이지
-                            </TextComponent>
-                        )}
-                        <View
-                            className={twMerge(
-                                ["mb-18", "rounded-all", "bg-background-default"],
-                                ["border", "border-divider"],
-                            )}>
-                            {MYPAGE_NAV_LIST.map((item, index) => {
-                                // 마지막 요소에만 border-b를 빼주기 위해서
-                                // 이 map을 통해 선택된 요소가 마지막 요소인지 판별
-                                const isLast = index === MYPAGE_NAV_LIST.length - 1;
 
-                                return (
-                                    <View key={index}>
-                                        <Pressable
-                                            onPress={() => handleNavigate(item.path)}
-                                            className={twMerge(
-                                                ["flex-row", "justify-between", "items-center"],
-                                                ["p-4", "active:bg-divider", "transition-all"],
-                                                item.isDanger && "active:bg-error-main",
-                                                !isLast && ["border-b", "border-divider"],
-                                            )}>
-                                            <TextComponent
-                                                className={twMerge(
-                                                    ["font-medium"],
-                                                    item.isDanger && [
-                                                        "text-error-main",
-                                                        "active:text-error-contrast",
-                                                    ],
-                                                )}>
-                                                {item.label}
-                                            </TextComponent>
-                                        </Pressable>
-                                    </View>
-                                );
-                            })}
-                        </View>
+                        {/* 마이 메뉴 영역 */}
+                        {isLoggedIn && (
+                            <>
+                                <TextComponent
+                                    className={twMerge(
+                                        ["font-extrabold", "text-sm", "text-text-secondary"],
+                                        "mb-3",
+                                    )}>
+                                    마이페이지
+                                </TextComponent>
+
+                                <View
+                                    className={twMerge(
+                                        ["mb-10", "rounded-xl", "bg-background-default"],
+                                        ["border", "border-divider"],
+                                    )}>
+                                    {MYPAGE_NAV_LIST.map((item, index) => {
+                                        // 마지막 요소에만 border-b를 빼주기 위해서
+                                        // 이 map을 통해 선택된 요소가 마지막 요소인지 판별
+                                        const isLast = index === MYPAGE_NAV_LIST.length - 1;
+
+                                        return (
+                                            <View key={index}>
+                                                <Pressable
+                                                    onPress={() => handleNavigate(item.path)}
+                                                    className={twMerge(
+                                                        [
+                                                            "flex-row",
+                                                            "justify-between",
+                                                            "items-center",
+                                                        ],
+                                                        [
+                                                            "p-4",
+                                                            "active:bg-divider",
+                                                            "transition-all",
+                                                        ],
+                                                        item.isDanger && "active:bg-error-main",
+                                                        !isLast && ["border-b", "border-divider"],
+                                                    )}>
+                                                    <TextComponent
+                                                        className={twMerge(
+                                                            ["font-medium"],
+                                                            item.isDanger && [
+                                                                "text-error-main",
+                                                                "active:text-error-contrast",
+                                                            ],
+                                                        )}>
+                                                        {item.label}
+                                                    </TextComponent>
+                                                </Pressable>
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            </>
+                        )}
                     </ScrollView>
 
-                    {/* 사용자 부분 */}
                     {/* 사용자 부분 */}
                     <View className={twMerge(["mt-4", "p-4", "border-t", "border-divider"])}>
                         {isLoggedIn ? (
@@ -299,7 +302,7 @@ function MainHeaderMobile() {
                             </View>
                         )}
                     </View>
-                </SafeAreaProvider>
+                </SafeAreaView>
             </Modal>
         </View>
     );
