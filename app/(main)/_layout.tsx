@@ -6,6 +6,7 @@ import { Category } from "@/types/category";
 import categoryApi from "@/api/user/categoryApi";
 import MainHeaderMobile from "@/components/layouts/main/MainHeaderMobile";
 import MainHeaderDesktop from "@/components/layouts/main/MainHeaderDesktop";
+import { twMerge } from "tailwind-merge";
 
 // 얘네들도 어차피 사용되니까,
 // 상위 컴포넌트로 욜려도 됨
@@ -15,12 +16,11 @@ import MainHeaderDesktop from "@/components/layouts/main/MainHeaderDesktop";
 // 1. 개발자의 입장에서 Props만 많아질 뿐
 // 2. zustand는 이 프로젝트 전역에 걸친 메모리에 상주하는 데이터 접근만 하고 있어서 리소스 누수가 크지 않음
 
-
 function MainLayout() {
     const { width } = useWindowDimensions();
     const isMobile = width < 768;
 
-    const[list, setList] = useState<Category[]>([]);
+    const [list, setList] = useState<Category[]>([]);
 
     useEffect(() => {
         const loadCategories = async () => {
@@ -34,10 +34,22 @@ function MainLayout() {
         loadCategories().then(() => {});
     }, []);
 
+    // flex 안에서 배치를 바꿔주기 위해서는 부오메데 justify-content, align-items 를 사용했는데
+    // 그렇다면 자식은 결코 위치를 바꿀 수 없는가?  그것은 아니다.
+    //
+
     return (
         <View className={"flex-1"}>
             {isMobile ? <MainHeaderMobile list={list} /> : <MainHeaderDesktop list={list} />}
-            <View className={"flex-1"}>
+            <View
+                className={twMerge([
+                    "flex-1",
+                    "w-full",
+                    "max-w-7xl",
+                    "p-4",
+                    "md:py-8",
+                    "self-center",
+                ])}>
                 <Slot />
             </View>
 

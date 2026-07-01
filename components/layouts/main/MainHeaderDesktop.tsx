@@ -69,7 +69,7 @@ function MainHeaderDesktop({ list }: Props) {
                                 <Ionicons
                                     name={"chevron-down"}
                                     size={16}
-                                    className={twMerge("mt-1", "text-text-secondary")}
+                                    className={twMerge("ml-1", "text-text-secondary")}
                                 />
                             </View>
                         }>
@@ -157,27 +157,42 @@ function MainHeaderDesktop({ list }: Props) {
                                 }>
                                 {close => (
                                     <View className={twMerge("py-2", "w-40")}>
-                                        {MYPAGE_NAV_LIST.map((item) => (
+                                        {MYPAGE_NAV_LIST.map(item => (
                                             <View key={item.path}>
                                                 {item.isDanger && (
-                                                    <View className={twMerge(["h-[1px]", "bg-divider", "my-1"])} />
+                                                    <View
+                                                        className={twMerge([
+                                                            "h-[1px]",
+                                                            "bg-divider",
+                                                            "my-1",
+                                                        ])}
+                                                    />
                                                 )}
 
                                                 <Pressable
                                                     onPress={() => {
-                                                    close();
-                                                    router.push(item.path);
-                                                }}
-                                                           className={twMerge(["px-4", "py-2.5", "transition-all"],
-                                                           item.isDanger ? ["hover:bg-error-main", "hover:bg-background-default"]
-                                                           : ["hover:bg-background-default"])}
-                                                >
-                                                    <TextComponent className={twMerge([
-                                                        "text-sm", "font-medium",
-                                                    ], item.isDanger && ["text-error-main", "hover:text-error-contrast"])}>
+                                                        close();
+                                                        router.push(item.path);
+                                                    }}
+                                                    className={twMerge(
+                                                        ["px-4", "py-2.5", "transition-all"],
+                                                        item.isDanger
+                                                            ? [
+                                                                  "hover:bg-error-main",
+                                                                  "hover:bg-background-default",
+                                                              ]
+                                                            : ["hover:bg-background-default"],
+                                                    )}>
+                                                    <TextComponent
+                                                        className={twMerge(
+                                                            ["text-sm", "font-medium"],
+                                                            item.isDanger && [
+                                                                "text-error-main",
+                                                                "hover:text-error-contrast",
+                                                            ],
+                                                        )}>
                                                         {item.label}
                                                     </TextComponent>
-
                                                 </Pressable>
                                             </View>
                                         ))}
