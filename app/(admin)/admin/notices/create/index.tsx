@@ -27,6 +27,13 @@ function AdminNoticeCreatePage() {
         },
     });
     const onSubmit = async (data: AdminNoticeInputType) => {
+        // 이 함수는 사용자가 입력한 값을 react-hook-form이 검증을 하고 성공한 정보들을 받아서
+
+
+        // 사용자자 입력한 값과 백엔드에게 던져야 되는 내용이 다르면 그렇게 맞춰서 수정하여
+
+
+        // 백엔드에게 던져주는 역할을 하는 함수 (try- catch)
         try {
             await adminNoticeApi.createNotice(data);
 
